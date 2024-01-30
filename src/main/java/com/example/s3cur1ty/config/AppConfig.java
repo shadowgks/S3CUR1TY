@@ -19,7 +19,7 @@ public class AppConfig {
 
     @Bean
     public UserDetailsService userDetailsService(){
-        return username -> appUserRepository.findAppUserByUserName(username)
+        return email -> appUserRepository.findAppUserByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("Not found this user!"));
     }
 
