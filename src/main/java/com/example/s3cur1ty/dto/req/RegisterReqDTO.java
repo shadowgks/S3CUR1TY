@@ -1,9 +1,9 @@
-package com.example.s3cur1ty.dtos;
+package com.example.s3cur1ty.dto.req;
 
 
 import javax.validation.constraints.NotNull;
 
-public record RegisteredDTO(
+public record RegisterReqDTO(
         @NotNull(message = "Full Name must have not be null")
         String fullName,
         @NotNull(message = "Username must have not be null")

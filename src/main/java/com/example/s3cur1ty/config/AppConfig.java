@@ -1,6 +1,6 @@
 package com.example.s3cur1ty.config;
 
-import com.example.s3cur1ty.repositories.UserRepository;
+import com.example.s3cur1ty.repositorie.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

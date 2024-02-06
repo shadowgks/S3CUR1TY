@@ -1,21 +1,34 @@
-package com.example.s3cur1ty.services.impls;
+package com.example.s3cur1ty.service.impls;
 
-import com.example.s3cur1ty.models.entites.AppUser;
-import com.example.s3cur1ty.repositories.UserRepository;
-import com.example.s3cur1ty.services.UserService;
+import com.example.s3cur1ty.model.entites.AppUser;
+import com.example.s3cur1ty.model.enums.RoleType;
+import com.example.s3cur1ty.repositorie.PermissionGroupRepository;
+import com.example.s3cur1ty.repositorie.RoleRepository;
+import com.example.s3cur1ty.repositorie.UserRepository;
+import com.example.s3cur1ty.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Set;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
-    private final UserRepository appUserRepository;
+    private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
+    private final RoleRepository roleRepository;
+    private final PermissionGroupRepository groupRepository;
 
+
+    @Override
+    public List<AppUser> findAllUser() {
+        return userRepository.findAll();
+    }
 
     @Override
     public AppUser register(AppUser req) {
@@ -23,10 +36,11 @@ public class UserServiceImpl implements UserService {
                 .userName(req.getUsername())
                 .email(req.getEmail())
                 .fullName(req.getFullName())
-                .roles(req.getRoles())
                 .password(passwordEncoder.encode(req.getPassword()))
                 .build();
-        return appUserRepository.save(user);
+        roleRepository.findRoleByName(RoleType.GUEST).ifPresent(role -> user.setRoles(Set.of(role)));
+        groupRepository.findPermissionGroupByName("stars").ifPresent(permissionGroup -> user.setPermissionGroups(Set.of(permissionGroup)));
+        return userRepository.save(user);
     }
 
     @Override
@@ -37,7 +51,7 @@ public class UserServiceImpl implements UserService {
                         req.getPassword()
                 )
         );
-        return appUserRepository.findAppUserByEmail(req.getEmail())
+        return userRepository.findAppUserByEmail(req.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Not Found Any User"));
     }
 }

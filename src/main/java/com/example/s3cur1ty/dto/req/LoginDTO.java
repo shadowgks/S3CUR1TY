@@ -1,4 +1,4 @@
-package com.example.s3cur1ty.dtos;
+package com.example.s3cur1ty.dto.req;
 
 import javax.validation.constraints.NotNull;
 
